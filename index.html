@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmaPro - Smart Farm Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">🌾</span>
+                <span class="logo-text">FarmaPro</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#crops" class="nav-link">Crops</a></li>
+                <li><a href="#grocery" class="nav-link">🛒 Grocery</a></li>
+                <li><a href="#prices" class="nav-link">Market Prices</a></li>
+                <li><a href="#weather" class="nav-link">Weather</a></li>
+                <li><a href="#orders" class="nav-link">📋 Orders</a></li>
+                <li><a href="#dashboard" class="nav-link">Dashboard</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <button class="btn-whatsapp" onclick="openWhatsApp()">💬 WhatsApp</button>
+                <button class="btn-login">Login</button>
+                <button class="btn-signup">Sign Up</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Welcome to FarmaPro</h1> 
+            <p class="hero-subtitle">Your Smart Agricultural Portal for Better Farming</p>
+            <div class="hero-buttons">
+                <button class="btn-primary">Get Started</button>
+                <button class="btn-secondary">Learn More</button>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="hero-illustration">🌱</div>
+        </div>
+    </section>
+
+    <!-- Quick Stats -->
+    <section class="stats">
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number">12,500+</div>
+                <div class="stat-label">Active Farmers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">85K+</div>
+                <div class="stat-label">Crops Listed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">32</div>
+                <div class="stat-label">Districts</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">⭐ 4.8</div>
+                <div class="stat-label">User Rating</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Crops Section -->
+    <section id="crops" class="crops">
+        <div class="section-header">
+            <h2>Available Crops</h2>
+            <p>Browse and manage your crops with real-time updates</p>
+        </div>
+        <div class="crops-container">
+            <div class="crop-card">
+                <div class="crop-icon">🌾</div>
+                <h3>Wheat</h3>
+                <p class="crop-detail">High yield variety</p>
+                <div class="crop-info">
+                    <span class="price">₹500/kg</span>
+                    <span class="demand">High Demand</span>
+                </div>
+                <button class="btn-small">View Details</button>
+            </div>
+            <div class="crop-card">
+                <div class="crop-icon">🍅</div>
+                <h3>Tomato</h3>
+                <p class="crop-detail">Fresh and organic</p>
+                <div class="crop-info">
+                    <span class="price">₹30/kg</span>
+                    <span class="demand">Medium Demand</span>
+                </div>
+                <button class="btn-small">View Details</button>
+            </div>
+            <div class="crop-card">
+                <div class="crop-icon">🥕</div>
+                <h3>Carrot</h3>
+                <p class="crop-detail">Seasonal favorite</p>
+                <div class="crop-info">
+                    <span class="price">₹40/kg</span>
+                    <span class="demand">High Demand</span>
+                </div>
+                <button class="btn-small">View Details</button>
+            </div>
+            <div class="crop-card">
+                <div class="crop-icon">🌽</div>
+                <h3>Corn</h3>
+                <p class="crop-detail">Multi-purpose crop</p>
+                <div class="crop-info">
+                    <span class="price">₹450/kg</span>
+                    <span class="demand">Low Demand</span>
+                </div>
+                <button class="btn-small">View Details</button>
+            </div>
+            <div class="crop-card">
+                <div class="crop-icon">🥔</div>
+                <h3>Potato</h3>
+                <p class="crop-detail">Year-round staple</p>
+                <div class="crop-info">
+                    <span class="price">₹25/kg</span>
+                    <span class="demand">High Demand</span>
+                </div>
+                <button class="btn-small">View Details</button>
+            </div>
+            <div class="crop-card">
+                <div class="crop-icon">🧅</div>
+                <h3>Onion</h3>
+                <p class="crop-detail">Essential vegetable</p>
+                <div class="crop-info">
+                    <span class="price">₹35/kg</span>
+                    <span class="demand">Very High</span>
+                </div>
+                <button class="btn-small">View Details</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Grocery Section (Blinkit Style) -->
+
+    <section id="grocery" class="grocery">
+        <div class="section-header">
+            <h2>🛒 Grocery Store</h2>
+            <p>Quick delivery of fresh groceries - Demo Mode</p>
+        </div>
+        
+        <div class="grocery-controls">
+            <input type="text" id="grocerySearch" placeholder="Search groceries..." class="grocery-search">
+            <div class="cart-info">
+                <button class="cart-button" onclick="toggleCart()">
+                    🛒 Cart (<span id="cartCount">0</span>)
+                </button>
+                <div class="cart-total">Total: ₹<span id="cartTotal">0</span></div>
+            </div>
+        </div>
+
+        <div class="grocery-container">
+            <!-- Vegetables -->
+            <div class="grocery-card">
+                <div class="grocery-image">🍅</div>
+                <h3>Fresh Tomato</h3>
+                <p class="grocery-desc">Local farm fresh</p>
+                <div class="grocery-price">₹30 <span class="unit">/kg</span></div>
+                <button class="btn-add-cart" onclick="addToCart('Fresh Tomato', 30)">Add to Cart</button>
+            </div>
+
+            <div class="grocery-card">
+                <div class="grocery-image">🥕</div>
+                <h3>Fresh Carrot</h3>
+                <p class="grocery-desc">Organic & fresh</p>
+                <div class="grocery-price">₹40 <span class="unit">/kg</span></div>
+                <button class="btn-add-cart" onclick="addToCart('Fresh Carrot', 40)">Add to Cart</button>
+            </div>
+
+            <div class="grocery-card">
+                <div class="grocery-image">🥔</div>
+                <h3>Potato (1kg)</h3>
+                <p class="grocery-desc">Premium quality</p>
+                <div class="grocery-price">₹25 <span class="unit">/pack</span></div>
+                <button class="btn-add-cart" onclick="addToCart('Potato (1kg)', 25)">Add to Cart</button>
+            </div>
+
+            <div class="grocery-card">
+                <div class="grocery-image">🧅</div>
+                <h3>Onion (1kg)</h3>
+                <p class="grocery-desc">Fresh onions</p>
+                <div class="grocery-price">₹35 <span class="unit">/pack</span></div>
+                <button class="btn-add-cart" onclick="addToCart('Onion (1kg)', 35)">Add to Cart</button>
+            </div>
+
+            <!-- Fruits -->
+            <div class="grocery-card">
+                <div class="grocery-image">🍎</div>
+                <h3>Red Apple</h3>
+                <p class="grocery-desc">Sweet & juicy</p>
+                <div class="grocery-price">₹80 <span class="unit">/kg</span></div>
+                <button class="btn-add-cart" onclick="addToCart('Red Apple', 80)">Add to Cart</button>
+            </div>
+
+            <div class="grocery-card">
+                <div class="grocery-image">🍌</div>
+                <h3>Banana Bunch</h3>
+                <p class="grocery-desc">Fresh bunch</p>
+                <div class="grocery-price">₹60 <span class="unit">/bunch</span></div>
+                <button class="btn-add-cart" onclick="addToCart('Banana Bunch', 60)">Add to Cart</button>
+            </div>
+
+            <!-- Dairy -->
+            <div class="grocery-card">
+                <div class="grocery-image">🥛</div>
+                <h3>Fresh Milk (1L)</h3>
+                <p class="grocery-desc">Pure & fresh</p>
+                <div class="grocery-price">₹50 <span class="unit">/ltr</span></div>
+                <button class="btn-add-cart" onclick="addToCart('Fresh Milk (1L)', 50)">Add to Cart</button>
+            </div>
+
+            <div class="grocery-card">
+                <div class="grocery-image">🧈</div>
+                <h3>Butter (500g)</h3>
+                <p class="grocery-desc">Creamy butter</p>
+                <div class="grocery-price">₹120 <span class="unit">/pack</span></div>
+                <button class="btn-add-cart" onclick="addToCart('Butter (500g)', 120)">Add to Cart</button>
+            </div>
+
+            <!-- Dry Goods -->
+            <div class="grocery-card">
+                <div class="grocery-image">🌾</div>
+                <h3>Wheat Flour (1kg)</h3>
+                <p class="grocery-desc">Premium flour</p>
+                <div class="grocery-price">₹45 <span class="unit">/pack</span></div>
+                <button class="btn-add-cart" onclick="addToCart('Wheat Flour (1kg)', 45)">Add to Cart</button>
+            </div>
+
+            <div class="grocery-card">
+                <div class="grocery-image">🍚</div>
+                <h3>Basmati Rice (1kg)</h3>
+                
+                <p class="grocery-desc">Premium basmati</p>
+                <div class="grocery-price">₹200 <span class="unit">/pack</span></div>
+                <button class="btn-add-cart" onclick="addToCart('Basmati Rice (1kg)', 200)">Add to Cart</button>
+            </div>
+
+            <div class="grocery-card">
+                <div class="grocery-image">🫘</div>
+                <h3>Pulses (1kg)</h3>
+                <p class="grocery-desc">Mixed dal</p>
+                <div class="grocery-price">₹100 <span class="unit">/pack</span></div>
+                <button class="btn-add-cart" onclick="addToCart('Pulses (1kg)', 100)">Add to Cart</button>
+            </div>
+
+            <div class="grocery-card">
+                <div class="grocery-image">🥕</div>
+                <h3>Spices Mix (100g)</h3>
+                <p class="grocery-desc">Aromatic spices</p>
+                <div class="grocery-price">₹75 <span class="unit">/pack</span></div>
+                <button class="btn-add-cart" onclick="addToCart('Spices Mix (100g)', 75)">Add to Cart</button>
+            </div>
+        </div>
+
+        <!-- Cart Modal -->
+        <div id="cartModal" class="cart-modal">
+            <div class="cart-modal-content">
+                <div class="cart-modal-header">
+                    <h2>🛒 Your Cart</h2>
+                    <button class="close-cart" onclick="toggleCart()">&times;</button>
+                </div>
+                <div id="cartItems" class="cart-items-list">
+                    <p class="empty-cart">Your cart is empty</p>
+                </div>
+                <div class="cart-modal-footer">
+                    <div class="cart-summary">
+                        <p>Subtotal: ₹<span id="subtotal">0</span></p>
+                        <p>Delivery: ₹<span id="delivery">0</span></p>
+                        <p style="border-top: 2px solid #eee; padding-top: 1rem; margin-top: 1rem; font-size: 1.2rem; font-weight: bold;">Total: ₹<span id="total">0</span></p>
+                    </div>
+                    <button class="btn-checkout" onclick="checkoutCart()">Checkout via WhatsApp</button>
+                    <button class="btn-clear-cart" onclick="clearCart()">Clear Cart</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="prices" class="market-prices">
+        <div class="section-header">
+            <h2>Current Market Prices</h2>
+            <p>Real-time price updates from major markets</p>
+        </div>
+        <div class="prices-container">
+            <table class="prices-table">
+                <thead>
+                    <tr>
+                        <th>Crop Name</th>
+                        <th>Today's Price</th>
+                        <th>Yesterday</th>
+                        <th>Change</th>
+                        <th>Trend</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>🌾 Wheat</td>
+                        <td class="price-today">₹500</td>
+                        <td>₹495</td>
+                        <td class="positive">+₹5</td>
+                        <td><span class="trend-up">📈 Up</span></td>
+                    </tr>
+                    <tr>
+                        <td>🍅 Tomato</td>
+                        <td class="price-today">₹30</td>
+                        <td>₹32</td>
+                        <td class="negative">-₹2</td>
+                        <td><span class="trend-down">📉 Down</span></td>
+                    </tr>
+                    <tr>
+                        <td>🥕 Carrot</td>
+                        <td class="price-today">₹40</td>
+                        <td>₹40</td>
+                        <td class="neutral">±₹0</td>
+                        <td><span class="trend-stable">➡️ Stable</span></td>
+                    </tr>
+                    <tr>
+                        <td>🌽 Corn</td>
+                        <td class="price-today">₹450</td>
+                        <td>₹445</td>
+                        <td class="positive">+₹5</td>
+                        <td><span class="trend-up">📈 Up</span></td>
+                    </tr>
+                    <tr>
+                        <td>🥔 Potato</td>
+                        <td class="price-today">₹25</td>
+                        <td>₹27</td>
+                        <td class="negative">-₹2</td>
+                        <td><span class="trend-down">📉 Down</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Weather Section -->
+    <section id="weather" class="weather">
+        <div class="section-header">
+            <h2>Weather Forecast</h2>
+            <p>7-day forecast for optimal farming</p>
+        </div>
+        <div class="weather-container">
+            <div class="weather-card">
+                <div class="day">Today</div>
+                <div class="weather-icon">☀️</div>
+                <div class="temp">32°C</div>
+                <div class="condition">Sunny</div>
+                <div class="humidity">💧 65%</div>
+            </div>
+            <div class="weather-card">
+                <div class="day">Tomorrow</div>
+                <div class="weather-icon">⛅</div>
+                <div class="temp">30°C</div>
+                <div class="condition">Partly Cloudy</div>
+                <div class="humidity">💧 70%</div>
+            </div>
+            <div class="weather-card">
+                <div class="day">Day 3</div>
+                <div class="weather-icon">🌧️</div>
+                <div class="temp">28°C</div>
+                <div class="condition">Light Rain</div>
+                <div class="humidity">💧 85%</div>
+            </div>
+            <div class="weather-card">
+                <div class="day">Day 4</div>
+                <div class="weather-icon">⛈️</div>
+                <div class="temp">26°C</div>
+                <div class="condition">Heavy Rain</div>
+                <div class="humidity">💧 95%</div>
+            </div>
+            <div class="weather-card">
+                <div class="day">Day 5</div>
+                <div class="weather-icon">🌤️</div>
+                <div class="temp">29°C</div>
+                <div class="condition">Cloudy</div>
+                <div class="humidity">💧 75%</div>
+            </div>
+            <div class="weather-card">
+                <div class="day">Day 6</div>
+                <div class="weather-icon">☀️</div>
+                <div class="temp">33°C</div>
+                <div class="condition">Sunny</div>
+                <div class="humidity">💧 60%</div>
+            </div>
+            <div class="weather-card">
+                <div class="day">Day 7</div>
+                <div class="weather-icon">☀️</div>
+                <div class="temp">34°C</div>
+                <div class="condition">Hot & Sunny</div>
+                <div class="humidity">💧 55%</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="dashboard">
+        <div class="section-header">
+            <h2>Farmer Dashboard</h2>
+            <p>Your farming metrics and insights</p>
+        </div>
+        <div class="user-welcome" id="userWelcome"></div>
+        <div class="dashboard-container">
+            <div class="dashboard-card">
+                <h3>Total Harvest</h3>
+                <div class="dashboard-value">2,450 kg</div>
+                <div class="dashboard-chart">📊</div>
+            </div>
+            <div class="dashboard-card">
+                <h3>Revenue This Month</h3>
+                <div class="dashboard-value">₹1,22,500</div>
+                <div class="dashboard-chart">💰</div>
+            </div>
+            <div class="dashboard-card">
+                <h3>Active Fields</h3>
+                <div class="dashboard-value">5</div>
+                <div class="dashboard-chart">🌱</div>
+            </div>
+            <div class="dashboard-card">
+                <h3>Soil Health Score</h3>
+                <div class="dashboard-value">8.5/10</div>
+                <div class="dashboard-chart">🌍</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact">
+        <div class="section-header">
+            <h2>Get in Touch</h2>
+            <p>Have questions? Message us on WhatsApp - we reply within minutes!</p>
+        </div>
+        <div class="contact-container">
+            <div class="contact-options">
+                <button class="contact-whatsapp-btn" onclick="sendViaWhatsApp()">
+                    <span class="whatsapp-icon">💬</span>
+                    <span>Message on WhatsApp: +91 7823802792</span>
+                </button>
+                <p class="or-text">OR</p>
+            </div>
+            <form class="contact-form">
+                <input type="text" id="userName" placeholder="Your Name" required>
+                <input type="email" placeholder="Your Email" required>
+                <textarea placeholder="Your Message" rows="5" required></textarea>
+                <button type="submit" class="btn-primary">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>FarmaPro</h4>  
+                <p>Making farming smarter and more profitable</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#crops">Crops</a></li>
+                    <li><a href="#prices">Prices</a></li>
+                    <li><a href="#dashboard">Dashboard</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p>Email: shravannikalje46@gmail.com</p>
+                <p>Phone: +91 7823802792</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+           
+            © 2025 CIIT Training Institute — All rights reserved</p>
+    <p>Developed by <strong>Shravan Nikalje</strong></p>
+    <p>CIIT Training Institute Student</p>
+
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

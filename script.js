@@ -3,16 +3,23 @@
 // ================================
 const WHATSAPP_NUMBER = '917823802792'; // Format: Country code + number without + or spaces
 const WHATSAPP_MESSAGE_TEMPLATE = 'Hi FarmaPro! I have a question about your farming portal. Can you help me?';
+const USER_STORAGE_KEY = 'farmaUsers';
+const USER_NAME_KEY = 'farmaUserName';
+const USER_EMAIL_KEY = 'farmaUserEmail';
+
+function getWhatsAppNumber() {
+    return (WHATSAPP_NUMBER || '').replace(/\D/g, '');
+}
 
 // ================================
 // Navigation Active Link Management
 // ================================
 const navLinks = document.querySelectorAll('.nav-link');
-const sections = document.querySelectorAll('section');
+const sections = document.querySelectorAll('section[id]');
 
 // Set active link on page load
 window.addEventListener('load', () => {
-    updateActiveLink();
+    requestAnimationFrame(updateActiveLink);
 });
 
 // Update active link on scroll
@@ -21,13 +28,14 @@ window.addEventListener('scroll', () => {
 });
 
 function updateActiveLink() {
-    let current = '';
+    let current = sections[0]?.getAttribute('id') || '';
+    const scrollPosition = window.scrollY + 120;
     
     sections.forEach((section) => {
         const sectionTop = section.offsetTop;
-        const sectionHeight = section.clientHeight;
-        
-        if (scrollY >= sectionTop - 200) {
+        const sectionBottom = sectionTop + section.clientHeight;
+
+        if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
             current = section.getAttribute('id');
         }
     });
@@ -82,24 +90,167 @@ document.querySelectorAll('.btn-primary').forEach((btn) => {
 });
 
 // Learn More Button
-document.querySelectorAll('.btn-secondary').forEach((btn) => {
-    if (btn.textContent === 'Learn More') {
-        btn.addEventListener('click', (e) => {
+const learnMoreButton = document.getElementById('learnMoreBtn');
+if (learnMoreButton) {
+    learnMoreButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetSection = document.getElementById('crops');
+        if (targetSection) {
+            window.scrollTo({
+                top: targetSection.offsetTop - 80,
+                behavior: 'smooth'
+            });
+        }
+    });
+}
+
+// Login / Signup Buttons
+const loginButton = document.querySelector('.btn-login');
+const signupButton = document.querySelector('.btn-signup');
+
+if (loginButton) {
+    loginButton.addEventListener('click', () => openAuthModal('loginModal'));
+}
+
+if (signupButton) {
+    signupButton.addEventListener('click', () => openAuthModal('signupModal'));
+}
+
+function showFormError(errorId, message) {
+    const errorElement = document.getElementById(errorId);
+    if (errorElement) {
+        errorElement.textContent = message;
+    }
+}
+
+function clearFormError(errorId) {
+    showFormError(errorId, '');
+}
+
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function readStoredUsers() {
+    try {
+        const storedUsers = JSON.parse(localStorage.getItem(USER_STORAGE_KEY) || '[]');
+        return Array.isArray(storedUsers) ? storedUsers : [];
+    } catch (error) {
+        console.error('Failed to parse stored users:', error);
+        return [];
+    }
+}
+
+function saveStoredUsers(users) {
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(users));
+}
+
+function openAuthModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+    }
+}
+
+function closeAuthModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+    }
+}
+
+function setupAuthForms() {
+    const signupForm = document.getElementById('signupForm');
+    const loginForm = document.getElementById('loginForm');
+
+    document.querySelectorAll('[data-close-modal]').forEach((button) => {
+        button.addEventListener('click', () => closeAuthModal(button.getAttribute('data-close-modal')));
+    });
+
+    if (signupForm) {
+        signupForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            showNotification('📚 More information coming soon!', 'info');
+            clearFormError('signupFormError');
+
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+
+            if (!name || !email || !password || !confirmPassword) {
+                showFormError('signupFormError', 'Please fill in all fields.');
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                showFormError('signupFormError', 'Please enter a valid email address.');
+                return;
+            }
+
+            if (password.length < 6) {
+                showFormError('signupFormError', 'Password must be at least 6 characters.');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showFormError('signupFormError', 'Passwords do not match.');
+                return;
+            }
+
+            const users = readStoredUsers();
+            if (users.some((user) => user.email === email)) {
+                showFormError('signupFormError', 'This email is already registered. Please login.');
+                return;
+            }
+
+            users.push({ name, email, password });
+            saveStoredUsers(users);
+            localStorage.setItem(USER_NAME_KEY, name);
+            localStorage.setItem(USER_EMAIL_KEY, email);
+            updateUserDashboard();
+            signupForm.reset();
+            closeAuthModal('signupModal');
+            showNotification(`✅ Welcome ${name}! Signup successful.`, 'success');
         });
     }
-});
 
-// Login Button
-document.querySelector('.btn-login').addEventListener('click', () => {
-    showNotification('👤 Login feature coming soon!', 'info');
-});
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            clearFormError('loginFormError');
 
-// Sign Up Button
-document.querySelector('.btn-signup').addEventListener('click', () => {
-    showNotification('✨ Sign up feature coming soon!', 'info');
-});
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                showFormError('loginFormError', 'Please enter email and password.');
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                showFormError('loginFormError', 'Please enter a valid email address.');
+                return;
+            }
+
+            const users = readStoredUsers();
+            const existingUser = users.find((user) => user.email === email && user.password === password);
+
+            if (!existingUser) {
+                showFormError('loginFormError', 'Invalid login credentials.');
+                return;
+            }
+
+            localStorage.setItem(USER_NAME_KEY, existingUser.name);
+            localStorage.setItem(USER_EMAIL_KEY, existingUser.email);
+            updateUserDashboard();
+            loginForm.reset();
+            closeAuthModal('loginModal');
+            showNotification(`👋 Welcome back, ${existingUser.name}!`, 'success');
+        });
+    }
+}
 
 // ================================
 // Crop Card Interactions
@@ -126,24 +277,41 @@ const contactForm = document.querySelector('.contact-form');
 if (contactForm) {
     contactForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        
-        const name = contactForm.querySelector('#userName').value;
-        const email = contactForm.querySelector('input[type="email"]').value;
-        const message = contactForm.querySelector('textarea').value;
-        
-        if (name && email && message) {
-            // Store user name for dashboard
-            localStorage.setItem('farmaUserName', name);
+
+        clearFormError('contactFormError');
+
+        const name = contactForm.querySelector('#userName').value.trim();
+        const email = contactForm.querySelector('#userEmail').value.trim();
+        const message = contactForm.querySelector('#userMessage').value.trim();
+
+        if (!name || !email || !message) {
+            showFormError('contactFormError', 'Please fill in all fields.');
+            return;
+        }
+
+        if (!isValidEmail(email)) {
+            showFormError('contactFormError', 'Please enter a valid email address.');
+            return;
+        }
+
+        if (message.length < 10) {
+            showFormError('contactFormError', 'Message should be at least 10 characters.');
+            return;
+        }
+
+        try {
+            localStorage.setItem(USER_NAME_KEY, name);
+            localStorage.setItem(USER_EMAIL_KEY, email.toLowerCase());
             showNotification(`✅ Thank you ${name}! Your message has been sent.`, 'success');
-            
-            // Send to WhatsApp
+
             const whatsappMessage = `Name: ${name}\nEmail: ${email}\nMessage: ${message}`;
             sendToWhatsApp(whatsappMessage);
-            
+
             contactForm.reset();
             updateUserDashboard();
-        } else {
-            showNotification('⚠️ Please fill in all fields!', 'warning');
+        } catch (error) {
+            console.error('Contact form submission error:', error);
+            showFormError('contactFormError', 'Something went wrong. Please try again.');
         }
     });
 }
@@ -151,7 +319,17 @@ if (contactForm) {
 // ================================
 // Grocery Cart Management
 // ================================
-let cart = JSON.parse(localStorage.getItem('farmaCart')) || [];
+function loadStoredCart() {
+    try {
+        const storedCart = JSON.parse(localStorage.getItem('farmaCart') || '[]');
+        return Array.isArray(storedCart) ? storedCart : [];
+    } catch (error) {
+        console.error('Failed to parse cart data:', error);
+        return [];
+    }
+}
+
+let cart = loadStoredCart();
 const DELIVERY_CHARGE = 0; // Free delivery demo
 
 function addToCart(itemName, price) {
@@ -256,17 +434,17 @@ function checkoutCart() {
         return;
     }
     
-    const userName = localStorage.getItem('farmaUserName') || 'Valued Customer';
+    const userName = localStorage.getItem(USER_NAME_KEY) || 'Valued Customer';
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const total = subtotal + DELIVERY_CHARGE;
     
-    let cartMessage = `Hi FarmaPro! 👋\n\nI'm ${userName}.\n\n📦 Order Details:\n\n`;
+    let cartMessage = `Hi FarmaPro! 👋\n\nI'm ${userName}.\n\n📦 Order Details:\n`;
     cart.forEach(item => {
-        cartMessage += `• ${item.name} x${item.quantity} = ₹${item.price * item.quantity}\n`;
+        cartMessage += `\n• ${item.name}\n  Qty: ${item.quantity}\n  Amount: ₹${item.price * item.quantity}`;
     });
-    cartMessage += `\n💰 Subtotal: ₹${subtotal}\n🚚 Delivery: ₹${DELIVERY_CHARGE}\n📊 Total: ₹${total}\n\nPlease confirm my order. Thank you!`;
+    cartMessage += `\n\n💰 Subtotal: ₹${subtotal}\n🚚 Delivery: ₹${DELIVERY_CHARGE}\n📊 Total: ₹${total}\n\nPlease confirm my order. Thank you!`;
     
-    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(cartMessage)}`;
+    const whatsappUrl = `https://wa.me/${getWhatsAppNumber()}?text=${encodeURIComponent(cartMessage)}`;
     window.open(whatsappUrl, '_blank');
     
     showNotification('💬 Opening WhatsApp with your order...', 'success');
@@ -277,6 +455,10 @@ window.addEventListener('click', (event) => {
     const cartModal = document.getElementById('cartModal');
     if (event.target === cartModal) {
         cartModal.style.display = 'none';
+    }
+
+    if (event.target.classList.contains('auth-modal')) {
+        closeAuthModal(event.target.id);
     }
 });
 function showNotification(message, type = 'info') {
@@ -500,6 +682,8 @@ createScrollToTopButton();
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🌾 FarmaPro Portal loaded successfully!');
     showNotification('👋 Welcome to FarmaPro - Your Smart Farm Portal!', 'success');
+    setupAuthForms();
+    updateActiveLink();
     updateUserDashboard();
     updateCartUI(); // Initialize cart on page load
 });
@@ -525,48 +709,82 @@ document.addEventListener('keydown', (e) => {
 // WhatsApp Integration Functions
 // ================================
 function openWhatsApp() {
-    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE_TEMPLATE)}`;
+    const whatsappUrl = `https://wa.me/${getWhatsAppNumber()}?text=${encodeURIComponent(WHATSAPP_MESSAGE_TEMPLATE)}`;
     window.open(whatsappUrl, '_blank');
     showNotification('📱 Opening WhatsApp...', 'success');
 }
 
 function sendViaWhatsApp() {
-    const userName = localStorage.getItem('farmaUserName') || 'Dear Farmer';
+    const userName = localStorage.getItem(USER_NAME_KEY) || 'Dear Farmer';
     const whatsappMessage = `Hello! 👋\n\nI'm ${userName}, interested in learning more about FarmaPro portal. Can you help me?`;
-    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`;
+    const whatsappUrl = `https://wa.me/${getWhatsAppNumber()}?text=${encodeURIComponent(whatsappMessage)}`;
     window.open(whatsappUrl, '_blank');
     showNotification('💬 Connecting to WhatsApp...', 'success');
 }
 
 function sendToWhatsApp(message) {
     const fullMessage = `📬 New Contact Message:\n\n${message}\n\n---\nSent from FarmaPro Portal`;
-    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(fullMessage)}`;
+    const whatsappUrl = `https://wa.me/${getWhatsAppNumber()}?text=${encodeURIComponent(fullMessage)}`;
     // This opens WhatsApp for user confirmation
     setTimeout(() => {
         window.open(whatsappUrl, '_blank');
     }, 500);
 }
 
+function getUserDashboardMetrics(userName) {
+    const seed = userName.split('').reduce((total, char) => total + char.charCodeAt(0), 0);
+    const harvest = 1800 + (seed % 3200);
+    const revenue = (harvest * 42) + (seed % 5000);
+    const fields = 2 + (seed % 7);
+    const soil = (7 + ((seed % 30) / 10)).toFixed(1);
+
+    return {
+        harvest: `${harvest.toLocaleString('en-IN')} kg`,
+        revenue: `₹${revenue.toLocaleString('en-IN')}`,
+        fields: String(fields),
+        soil: `${soil}/10`
+    };
+}
+
 function updateUserDashboard() {
-    const userName = localStorage.getItem('farmaUserName');
+    const userName = localStorage.getItem(USER_NAME_KEY);
     const userWelcome = document.getElementById('userWelcome');
-    
-    if (userName && userWelcome) {
+
+    const harvestElement = document.getElementById('dashboardHarvest');
+    const revenueElement = document.getElementById('dashboardRevenue');
+    const fieldsElement = document.getElementById('dashboardFields');
+    const soilElement = document.getElementById('dashboardSoil');
+
+    if (userName && userWelcome && harvestElement && revenueElement && fieldsElement && soilElement) {
+        const metrics = getUserDashboardMetrics(userName);
         userWelcome.innerHTML = `
-            <div style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
-                <span style="font-size: 2rem;">👨‍🌾</span>
+            <div class="welcome-content">
+                <span class="welcome-icon">👨‍🌾</span>
                 <div>
-                    <p style="margin: 0; font-size: 1rem; opacity: 0.9;">Welcome back!</p>
-                    <p style="margin: 0; font-size: 1.5rem;">${userName}</p>
+                    <p class="welcome-subtitle">Welcome back!</p>
+                    <p class="welcome-title">${userName}</p>
                 </div>
             </div>
         `;
-        userWelcome.style.display = 'block';
+        harvestElement.textContent = metrics.harvest;
+        revenueElement.textContent = metrics.revenue;
+        fieldsElement.textContent = metrics.fields;
+        soilElement.textContent = metrics.soil;
     } else if (userWelcome) {
         userWelcome.innerHTML = `
-            <p style="margin: 0;">👨‍🌾 Enter your name in the contact form to see personalized dashboard</p>
+            <div class="welcome-content">
+                <span class="welcome-icon">👨‍🌾</span>
+                <div>
+                    <p class="welcome-subtitle">Welcome to your dashboard</p>
+                    <p class="welcome-title">Enter your name in Contact, Login, or Sign Up to personalize this section.</p>
+                </div>
+            </div>
         `;
-        userWelcome.style.fontSize = '1rem';
+
+        if (harvestElement) harvestElement.textContent = '2,450 kg';
+        if (revenueElement) revenueElement.textContent = '₹1,22,500';
+        if (fieldsElement) fieldsElement.textContent = '5';
+        if (soilElement) soilElement.textContent = '8.5/10';
     }
 }
 
